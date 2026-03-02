@@ -23,7 +23,7 @@ export default function SummaryInterview() {
   const recordingStartRef = useRef(null)
 
   const [allowed, setAllowed] = useState(null) // null = checking, true = show page, false = redirecting
-  const [connectionsStatus, setConnectionsStatus] = useState(2) // default 2 = enabled
+  const [connectionsStatus, setConnectionsStatus] = useState(null) // null = loading, 0 = disabled, 2 = enabled
   const [invalidInvite, setInvalidInvite] = useState(false) // true when invite URL exists but invite was deleted
 
   useEffect(() => {
@@ -298,7 +298,12 @@ export default function SummaryInterview() {
               ) : (
                 <>
                   <p>Camera is off. Click &quot;Start camera&quot; to begin.</p>
-                  <button type="button" onClick={startCamera} className={styles.btnPrimary}>
+                  <button
+                    type="button"
+                    onClick={startCamera}
+                    className={styles.btnPrimary}
+                    disabled={connectionsStatus !== 2}
+                  >
                     Start camera
                   </button>
                 </>
@@ -390,7 +395,7 @@ export default function SummaryInterview() {
               type="button"
               onClick={startCamera}
               className={styles.btnPrimary}
-              disabled={connectionsStatus === 0}
+              disabled={connectionsStatus !== 2}
             >
               Start camera
             </button>
