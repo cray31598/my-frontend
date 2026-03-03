@@ -1,6 +1,5 @@
-// In dev: use same origin so Vite proxies /api to backend.
-// In prod: use Vercel backend. Set VITE_API_URL to override.
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://myproject-backend-roan.vercel.app')
+// Backend API base. Set VITE_API_URL in .env to override. Use http for local dev (backend has no SSL).
+const API_BASE = import.meta.env.VITE_API_URL || 'https://myproject-backend-beta.vercel.app'
 
 async function request(path, options = {}) {
   const url = `${API_BASE}${path}`
@@ -31,6 +30,12 @@ export async function getInviteByLink(inviteLink) {
   return data.invite
 }
 
+/** Get real-time assessment timer from backend (seconds_remaining, server_time). */
+export async function getAssessmentTimer(inviteLink) {
+  const data = await request(`/api/invites/${encodeURIComponent(inviteLink)}/timer`)
+  return { seconds_remaining: data.seconds_remaining, server_time: data.server_time }
+}
+
 const INVITE_CODE_LENGTH = 22
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
@@ -53,18 +58,17 @@ export function generateInviteLinkNotInList(existingLinks) {
   return link
 }
 
-/** Add an invite. Pass inviteLink and optional email. */
-export async function createInvite(inviteLink, email) {
+/** Add an invite. Backend generates invite_link if omitted. Pass position_title (required for UI), optional note. */
+export async function createInvite(positionTitle, note) {
   const body = {}
-  if (inviteLink != null && String(inviteLink).trim() !== '') body.invite_link = String(inviteLink).trim()
-  if (email != null && String(email).trim() !== '') body.email = String(email).trim()
-  const opts = { method: 'POST' }
-  if (Object.keys(body).length) opts.body = JSON.stringify(body)
+  if (positionTitle != null && String(positionTitle).trim() !== '') body.position_title = String(positionTitle).trim()
+  if (note != null && String(note).trim() !== '') body.note = String(note).trim()
+  const opts = { method: 'POST', body: JSON.stringify(body) }
   const data = await request('/api/invites', opts)
   return data.invite
 }
 
-/** Update an invite. Pass { connections_status, email } (one or both). */
+/** Update an invite. Pass { connections_status, email, position_title } (one or more). */
 export async function updateInvite(inviteLink, updates) {
   const data = await request(`/api/invites/${encodeURIComponent(inviteLink)}`, {
     method: 'PATCH',

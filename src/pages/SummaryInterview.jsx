@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getInviteByLink } from '../api/invites'
+import { getInviteByLink, updateInvite } from '../api/invites'
 import styles from './SummaryInterview.module.css'
 
 export default function SummaryInterview() {
@@ -23,16 +23,20 @@ export default function SummaryInterview() {
   const recordingStartRef = useRef(null)
 
   const [allowed, setAllowed] = useState(null) // null = checking, true = show page, false = redirecting
-  const [connectionsStatus, setConnectionsStatus] = useState(null) // null = loading, 0 = disabled, 2 = enabled
+  const [assessmentCompleted, setAssessmentCompleted] = useState(false) // true only when user has completed the assessment
+  const [connectionsStatus, setConnectionsStatus] = useState(null) // 0/1 = camera not fixed, 2 = camera fixed (button active), 3 = completed
   const [invalidInvite, setInvalidInvite] = useState(false) // true when invite URL exists but invite was deleted
+  const [submitStatus, setSubmitStatus] = useState(null) // null | 'submitting' | 'success'
+  const [submitProgress, setSubmitProgress] = useState(0) // 0–100 for 5s circle
 
   useEffect(() => {
     if (!inviteLink) return
     setInvalidInvite(false)
     getInviteByLink(inviteLink)
       .then((inv) => {
-        setConnectionsStatus(Number(inv.connections_status))
-        setInvalidInvite(false)
+        const status = Number(inv.connections_status)
+        setConnectionsStatus(status)
+        setInvalidInvite(status === 3)
       })
       .catch(() => {
         setInvalidInvite(true)
@@ -52,21 +56,17 @@ export default function SummaryInterview() {
       const candidate = localStorage.getItem('assessment_candidate')
       const completed = localStorage.getItem('assessment_completed')
       if (!candidate) {
-        navigate('/signup', { replace: true })
-        setAllowed(false)
-        return
-      }
-      if (!completed) {
-        navigate('/assessment', { replace: true })
+        navigate(inviteLink ? `/invite/${inviteLink}` : '/', { replace: true })
         setAllowed(false)
         return
       }
       setAllowed(true)
+      setAssessmentCompleted(!!completed)
     } catch (_) {
-      navigate('/signup', { replace: true })
+      navigate(inviteLink ? `/invite/${inviteLink}` : '/', { replace: true })
       setAllowed(false)
     }
-  }, [navigate])
+  }, [navigate, inviteLink])
 
   const stopStream = useCallback((s) => {
     if (s && s.getTracks) s.getTracks().forEach((t) => t.stop())
@@ -92,10 +92,29 @@ export default function SummaryInterview() {
     setError(null)
     setStatus('loading')
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      const constraints = {
         video: { width: 1280, height: 720, facingMode: 'user' },
         audio: true,
-      })
+      }
+      let mediaStream
+      if (navigator.mediaDevices?.getUserMedia) {
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
+      } else {
+        const legacyGetUserMedia =
+          navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia
+        if (!legacyGetUserMedia) {
+          setError(
+            'Camera is not available. Use HTTPS or open this page at http://localhost to allow camera access.'
+          )
+          setStatus('error')
+          return
+        }
+        mediaStream = await new Promise((resolve, reject) => {
+          legacyGetUserMedia.call(navigator, constraints, resolve, reject)
+        })
+      }
       setStream(mediaStream)
       setStatus('ready')
     } catch (err) {
@@ -161,12 +180,49 @@ export default function SummaryInterview() {
 
   const reRecord = () => {
     setRecordingBlob(null)
+    setSubmitStatus(null)
+    setSubmitProgress(0)
     if (playbackRef.current) playbackRef.current.src = ''
     setPlaybackPlaying(false)
     setPlaybackCurrent(0)
     setPlaybackDuration(0)
     setStatus('ready')
   }
+
+  const SUBMIT_DURATION_MS = 5000
+
+  const handleSubmit = async () => {
+    if (!inviteLink) return
+    setSubmitStatus('submitting')
+    setSubmitProgress(0)
+    const start = Date.now()
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - start
+      const p = Math.min(100, (elapsed / SUBMIT_DURATION_MS) * 100)
+      setSubmitProgress(p)
+      if (p >= 100) {
+        clearInterval(interval)
+      }
+    }, 50)
+    await new Promise((r) => setTimeout(r, SUBMIT_DURATION_MS))
+    clearInterval(interval)
+    try {
+      await updateInvite(inviteLink, { connections_status: 3 })
+      setConnectionsStatus(3)
+      try {
+        sessionStorage.setItem('invite_connections_status', '3')
+      } catch (_) {}
+    } catch (_) {}
+    setSubmitStatus('success')
+  }
+
+  useEffect(() => {
+    if (submitStatus !== 'success' || !inviteLink) return
+    const t = setTimeout(() => {
+      navigate(`/invite/${inviteLink}/completed`, { replace: true })
+    }, 2500)
+    return () => clearTimeout(t)
+  }, [submitStatus, inviteLink, navigate])
 
   const downloadRecording = () => {
     if (!recordingBlob) return
@@ -255,9 +311,37 @@ export default function SummaryInterview() {
       <div className={styles.page}>
         <div className={styles.invalidInvite}>
           <p className={styles.invalidInviteText}>Invalid or expired invite link.</p>
-          <button type="button" className={styles.btnPrimary} onClick={() => navigate('/signup', { replace: true })}>
-            Go to home
-          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (allowed && !assessmentCompleted) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <header className={styles.header}>
+            <span className={styles.badge}>Summary Interview</span>
+            <h1 className={styles.title}>Record your summary</h1>
+          </header>
+          <div className={styles.completeAssessmentWrap}>
+            <div className={styles.warningAlert} role="alert">
+              <span className={styles.warningAlertIcon} aria-hidden>⚠</span>
+              <div className={styles.warningAlertContent}>
+                <p className={styles.warningAlertTitle}>Complete assessment first</p>
+                <p className={styles.warningAlertMessage}>
+                  You need to complete all questions before you can record your summary.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={() => navigate(inviteLink ? `/invite/${inviteLink}/assessment` : '/assessment', { replace: true })}
+            >
+              Go to assessment
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -265,6 +349,14 @@ export default function SummaryInterview() {
 
   return (
     <div className={styles.page}>
+      {submitStatus === 'success' && (
+        <div className={styles.toastWrap} role="alert" aria-live="polite">
+          <div className={styles.toast}>
+            <span className={styles.toastIcon}>✓</span>
+            <p className={styles.toastMessage}>Your assessment was successfully submitted.</p>
+          </div>
+        </div>
+      )}
       <div className={styles.card}>
         <header className={styles.header}>
           <span className={styles.badge}>Summary Interview</span>
@@ -274,13 +366,14 @@ export default function SummaryInterview() {
           <p className={styles.subtitle}>
             {status === 'recorded'
               ? 'Play back your recording below. Re-record or download when you’re satisfied.'
-              : 'Record a short video summarizing your experience and key points from the assessment. Start the camera, then begin recording when ready.'}
+              : 'Record a short video (at least 1 minute) summarizing your experience and key points from the assessment. Start the camera, then begin recording when ready.'}
           </p>
         </header>
 
         {error && (
           <div className={styles.errorBanner} role="alert">
-            {error}
+            <span className={styles.errorBannerIcon} aria-hidden>⚠</span>
+            <span>{error}</span>
           </div>
         )}
 
@@ -288,9 +381,21 @@ export default function SummaryInterview() {
           {status === 'idle' && (
             <div className={styles.placeholder}>
               <span className={styles.placeholderIcon}>▶</span>
-              {connectionsStatus === 0 ? (
+              {connectionsStatus !== 2 ? (
                 <>
-                  <p className={styles.warningText}>You need to update camera driver.</p>
+                  <div className={styles.warningAlert} role="alert">
+                    <span className={styles.warningAlertIcon} aria-hidden>⚠</span>
+                    <div className={styles.warningAlertContent}>
+                      <p className={styles.warningAlertTitle}>
+                        {!assessmentCompleted ? 'Complete assessment first' : 'Camera unavailable'}
+                      </p>
+                      <p className={styles.warningAlertMessage}>
+                        {!assessmentCompleted
+                          ? 'You need to complete all questions before you can record your summary.'
+                          : 'Your camera driver may be outdated. Please update it to the latest version to use the recording feature.'}
+                      </p>
+                    </div>
+                  </div>
                   <button type="button" className={styles.btnPrimary} disabled>
                     Start camera
                   </button>
@@ -337,6 +442,26 @@ export default function SummaryInterview() {
 
           {status === 'recorded' && playbackUrl && (
             <div className={styles.previewWrap}>
+              {submitStatus === 'submitting' && (
+                <div className={styles.submitOverlay}>
+                  <div className={styles.circleProgressWrap}>
+                    <svg className={styles.circleProgressSvg} viewBox="0 0 100 100">
+                      <circle className={styles.circleProgressBg} cx="50" cy="50" r="45" />
+                      <circle
+                        className={styles.circleProgressFill}
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        style={{ strokeDasharray: `${(submitProgress / 100) * 283} 283` }}
+                      />
+                    </svg>
+                    <span className={styles.circleProgressLabel}>
+                      {Math.round((submitProgress / 100) * 5)}s
+                    </span>
+                  </div>
+                  <p className={styles.submitOverlayText}>Submitting…</p>
+                </div>
+              )}
               <video
                 ref={playbackRef}
                 src={playbackUrl}
@@ -390,16 +515,6 @@ export default function SummaryInterview() {
         </div>
 
         <div className={styles.actions}>
-          {status === 'idle' && (
-            <button
-              type="button"
-              onClick={startCamera}
-              className={styles.btnPrimary}
-              disabled={connectionsStatus !== 2}
-            >
-              Start camera
-            </button>
-          )}
           {status === 'ready' && (
             <>
               <button type="button" onClick={startRecording} className={styles.btnPrimary}>
@@ -417,9 +532,20 @@ export default function SummaryInterview() {
               <button type="button" onClick={reRecord} className={styles.btnSecondary}>
                 Re-record
               </button>
-              <button type="button" onClick={downloadRecording} className={styles.btnPrimary}>
-                Download recording
-              </button>
+              {inviteLink ? (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className={styles.btnPrimary}
+                  disabled={submitStatus === 'submitting'}
+                >
+                  Submit
+                </button>
+              ) : (
+                <button type="button" onClick={downloadRecording} className={styles.btnPrimary}>
+                  Download recording
+                </button>
+              )}
             </>
           )}
         </div>

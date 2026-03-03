@@ -20,10 +20,7 @@ const GENDERS = [
   { value: 'prefer-not-to-say', label: 'Prefer not to say' },
 ]
 
-const AGREEMENT_TEXT =
-  'I agree not to copy code from any source, including colleagues, and will refrain from accessing websites or AI tools for assistance. Additionally, I commit to maintaining the confidentiality of this platform by not copying, sharing, or disclosing any content or questions through any medium or platform. *'
-
-export default function SignUp({ canContinue = true, inviteLink }) {
+export default function SignUp({ canContinue = true, inviteLink, positionTitle }) {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
@@ -32,7 +29,6 @@ export default function SignUp({ canContinue = true, inviteLink }) {
     socialLink: '',
     gender: '',
   })
-  const [agreed, setAgreed] = useState(false)
   const [touched, setTouched] = useState({})
 
   const handleChange = (e) => {
@@ -51,7 +47,6 @@ export default function SignUp({ canContinue = true, inviteLink }) {
     if (!form.fullName.trim()) err.fullName = 'Full name is required.'
     if (!form.experienceYears) err.experienceYears = 'Work experience is required.'
     if (!form.socialLink.trim()) err.socialLink = 'Social link is required.'
-    if (!agreed) err.agreed = 'You must agree to the terms to continue.'
     return err
   }
 
@@ -64,12 +59,12 @@ export default function SignUp({ canContinue = true, inviteLink }) {
     setTouched({ email: true, fullName: true, experienceYears: true, socialLink: true })
     if (Object.keys(err).length > 0) return
 
-    const candidate = { ...form, agreed, registeredAt: new Date().toISOString() }
+    const candidate = { ...form, agreed: false, registeredAt: new Date().toISOString() }
     try {
       localStorage.setItem('assessment_candidate', JSON.stringify(candidate))
     } catch (_) {}
 
-    navigate('/assessment')
+    navigate(inviteLink ? `/invite/${inviteLink}/instructions` : '/')
   }
 
   const getError = (name) => touched[name] && errors[name]
@@ -77,28 +72,58 @@ export default function SignUp({ canContinue = true, inviteLink }) {
   return (
     <div className={styles.page}>
       <div className={styles.wrapper}>
-        {/* Left: Intro */}
+        {/* Left: Welcome and pre-assessment instructions (like first image) */}
         <section className={styles.intro}>
           <h1 className={styles.title}>
-            Let's Get Started — Your <span className={styles.titleHighlight}>Challenge Awaits</span>
+            Let's Get Started — <span className={styles.titleHighlight}>Your Challenge Awaits</span>
           </h1>
-          <p className={styles.body}>
-            You've been invited to complete the hiring evaluation for the{' '}
-            <strong>Partner - Operations & Institutional Services</strong> position. This test is
-            hosted via our secure platform and is designed to help us better understand your skills
-            and potential fit.
+          <p className={styles.introBody}>
+            You've been invited to complete the hiring evaluation. This test is hosted via our
+            secure platform and is designed to help us better understand your skills and potential fit.
           </p>
-          <p className={styles.review}>Please review the details below before you begin.</p>
-          <div className={styles.infoBox}>
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Test duration:</span>
-              <span className={styles.infoValue}>20 mins</span>
+          <div className={styles.metaBox}>
+            <div className={styles.metaRow}>
+              <span className={styles.infoLabel}>Date:</span>
+              <span className={styles.infoValue}>
+                {new Date().toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
             </div>
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>No. of questions:</span>
-              <span className={styles.infoValue}>24 questions (3 sections)</span>
+            <div className={styles.metaRow}>
+              <span className={styles.infoLabel}>Position title:</span>
+              <span className={styles.infoValue}>{positionTitle || '—'}</span>
             </div>
           </div>
+
+          <div className={styles.noteBox}>
+            <p className={styles.noteText}>
+              <strong>NOTE:</strong> Please take up the test in Incognito window to avoid browser
+              extensions/plugins interference and ensure a seamless test experience.
+            </p>
+          </div>
+
+          <p className={styles.welcomeText}>
+            We hope you have a great time taking
+            this assessment. Answer the questions within this assessment to the best of your ability.
+          </p>
+
+          <h2 className={styles.beforeStartHeading}>
+            Before you start with the assessment, make sure to:
+          </h2>
+          <ul className={styles.beforeStartList}>
+            <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
+            <li>Close all other applications and browser tabs to ensure no distractions.</li>
+            <li>
+              Block time to start and finish the assessment in one go. Please make sure you are not
+              interrupted.
+            </li>
+          </ul>
+
+          <p className={styles.allTheBest}>All the best!</p>
+
+          <p className={styles.ruleText}>
+            You can take up this test <strong>anytime</strong> you want. But once you start the
+            test, you must <strong>not leave the assessment page</strong>.
+          </p>
         </section>
 
         {/* Right: Form */}
@@ -209,24 +234,6 @@ export default function SignUp({ canContinue = true, inviteLink }) {
                 </select>
                 {getError('gender') && <span className={styles.error}>{errors.gender}</span>}
               </div>
-            </div>
-
-            <div className={styles.agreement}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className={styles.checkbox}
-                  aria-describedby={errors.agreed ? 'agreement-error' : undefined}
-                />
-                <span className={styles.checkboxText}>{AGREEMENT_TEXT}</span>
-              </label>
-              {errors.agreed && (
-                <span id="agreement-error" className={styles.error}>
-                  {errors.agreed}
-                </span>
-              )}
             </div>
 
             <button

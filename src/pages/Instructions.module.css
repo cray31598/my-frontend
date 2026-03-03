@@ -1,0 +1,334 @@
+/* ——— Page & layout ——— */
+.page {
+  min-height: 100vh;
+  padding: 56px 32px;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 120% 70% at 50% -15%, rgba(34, 197, 94, 0.06), transparent 50%),
+    radial-gradient(ellipse 80% 40% at 100% 50%, rgba(34, 197, 94, 0.03), transparent 40%),
+    radial-gradient(ellipse 60% 30% at 0% 80%, rgba(34, 197, 94, 0.02), transparent 35%);
+}
+
+.wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  background: var(--bg-elevated);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 12px 48px rgba(0, 0, 0, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 48px 56px 44px;
+  transition: box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  opacity: 0.9;
+}
+
+.card:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 16px 56px rgba(0, 0, 0, 0.45),
+    0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* ——— Header ——— */
+.topBar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 26px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.08) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 8px;
+}
+
+.instructionsTitle {
+  margin: 0 0 12px;
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 0 0 36px;
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ——— Instructions list ——— */
+.listCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 40px 32px 28px;
+  margin-bottom: 36px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+}
+
+.instructionsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: instruction;
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text);
+}
+
+.instructionsList li {
+  position: relative;
+  padding-left: 2.75rem;
+  margin-bottom: 18px;
+}
+
+.instructionsList li:last-child {
+  margin-bottom: 0;
+}
+
+.instructionsList li::before {
+  content: counter(instruction);
+  counter-increment: instruction;
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 1.65rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(145deg, var(--primary) 0%, var(--primary-hover) 100%);
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.instructionsList strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.instructionsList strong.warning {
+  color: var(--error);
+  font-weight: 700;
+}
+
+/* ——— Agreement ——— */
+.agreement {
+  margin-bottom: 36px;
+  padding: 24px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.agreement:focus-within {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.checkbox:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.checkboxText {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* ——— CTA ——— */
+.startWrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.startBtn {
+  min-width: 240px;
+  padding: 18px 56px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow:
+    0 2px 12px rgba(34, 197, 94, 0.35),
+    0 1px 0 rgba(0, 0, 0, 0.1) inset;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.startBtn:hover:not(:disabled) {
+  background: linear-gradient(180deg, var(--primary-hover) 0%, #15803d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4), 0 1px 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+.startBtn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.startBtn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3), 0 1px 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+.startBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ——— Loading screen ——— */
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 32px;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 120% 70% at 50% -15%, rgba(34, 197, 94, 0.06), transparent 50%);
+}
+
+.loadingTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 840px) {
+  .page {
+    padding: 40px 24px;
+  }
+
+  .card {
+    padding: 40px 32px 36px;
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding: 24px 16px;
+  }
+
+  .card {
+    padding: 32px 24px 28px;
+    border-radius: 18px;
+  }
+
+  .card::before {
+    width: 3px;
+  }
+
+  .instructionsTitle {
+    font-size: 1.5rem;
+  }
+
+  .listCard {
+    padding: 24px 20px 24px 20px;
+  }
+
+  .instructionsList {
+    font-size: 0.9375rem;
+  }
+
+  .instructionsList li {
+    padding-left: 2.5rem;
+  }
+
+  .agreement {
+    padding: 20px;
+  }
+
+  .startBtn {
+    width: 100%;
+    min-width: 0;
+    padding: 16px 48px;
+  }
+}

@@ -21,13 +21,13 @@
   }
 }
 
-/* ——— Left: Intro ——— */
+/* ——— Left: Welcome and pre-assessment instructions ——— */
 .intro {
   padding: 8px 0;
 }
 
 .title {
-  margin: 0 0 20px;
+  margin: 0 0 16px;
   font-size: 1.75rem;
   font-weight: 700;
   line-height: 1.3;
@@ -36,39 +36,28 @@
 }
 
 .titleHighlight {
-  color: var(--accent);
+  color: var(--accent, var(--primary));
 }
 
-.body {
-  margin: 0 0 16px;
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.body strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.review {
+.introBody {
   margin: 0 0 20px;
   font-size: 0.9375rem;
+  line-height: 1.6;
   color: var(--text-muted);
-  line-height: 1.5;
 }
 
-.infoBox {
+.metaBox {
+  margin-bottom: 24px;
+  padding: 14px 18px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.infoRow {
+.metaRow {
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -83,6 +72,71 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text);
+}
+
+.noteBox {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+}
+
+.noteText {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.noteText strong {
+  color: var(--primary);
+}
+
+.welcomeText {
+  margin: 0 0 24px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.beforeStartHeading {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.beforeStartList {
+  margin: 0 0 24px;
+  padding-left: 1.35em;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.beforeStartList li {
+  margin-bottom: 8px;
+}
+
+.allTheBest {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ruleText {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.ruleText strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* ——— Right: Form ——— */
@@ -185,38 +239,6 @@
   font-size: 0.8125rem;
   color: var(--text-muted);
   line-height: 1.5;
-}
-
-/* Agreement checkbox */
-.agreement {
-  margin-top: 8px;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.checkbox {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: var(--primary);
-  cursor: pointer;
-}
-
-.checkboxText {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.agreement .error {
-  display: block;
-  margin-top: 8px;
 }
 
 /* Sign Up button */

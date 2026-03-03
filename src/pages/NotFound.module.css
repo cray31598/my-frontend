@@ -1,9 +1,11 @@
 .page {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
+  text-align: center;
   background: var(--bg);
   background-image:
     radial-gradient(ellipse 100% 60% at 50% -10%, rgba(34, 197, 94, 0.06), transparent 55%),
@@ -11,46 +13,20 @@
     radial-gradient(ellipse 60% 30% at 20% 70%, rgba(34, 197, 94, 0.03), transparent 50%);
 }
 
-.card {
-  position: relative;
-  text-align: center;
-  max-width: 440px;
-  padding: 48px 40px;
-  background: var(--bg-elevated);
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card), 0 0 0 1px rgba(255, 255, 255, 0.02);
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--error);
-  margin-bottom: 24px;
-  padding: 6px 14px;
-  background: rgba(248, 113, 113, 0.1);
-  border: 1px solid rgba(248, 113, 113, 0.25);
-  border-radius: 6px;
-}
-
 .code {
   display: block;
-  font-size: 6rem;
+  font-size: clamp(6rem, 18vw, 10rem);
   font-weight: 800;
-  color: var(--primary);
+  color: #333366;
   line-height: 1;
   letter-spacing: -0.05em;
-  margin-bottom: 16px;
-  text-shadow: 0 0 60px rgba(34, 197, 94, 0.15);
-  opacity: 0.95;
+  margin-bottom: 12px;
+  text-shadow: 0 0 60px rgba(51, 51, 102, 0.35);
 }
 
 .title {
-  margin: 0 0 12px;
-  font-size: 1.375rem;
+  margin: 0 0 16px;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.02em;
@@ -58,21 +34,8 @@
 
 .message {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--text-muted);
-  line-height: 1.65;
-  max-width: 320px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.decor {
-  margin-top: 40px;
-  width: 48px;
-  height: 3px;
-  margin-left: auto;
-  margin-right: auto;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  border-radius: 2px;
-  opacity: 0.5;
+  line-height: 1.6;
+  max-width: 360px;
 }
