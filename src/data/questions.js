@@ -52,18 +52,7 @@ export const QUESTIONNAIRES = [
           { id: 'd', text: 'Pilot changes in one workflow or client segment, measure, then scale with documentation.' },
           { id: 'e', text: 'Balance quick wins with a roadmap that aligns operations, product, and compliance.' },
         ],
-      },
-      {
-        id: 5,
-        text: 'You need to support platform growth while maintaining service quality and risk controls. How do you approach this?',
-        answers: [
-          { id: 'a', text: 'Define capacity and control thresholds; plan scaling (people, process, tech) before hitting limits.' },
-          { id: 'b', text: 'Invest in scalable processes and tooling now; avoid one-off fixes that don’t repeat.' },
-          { id: 'c', text: 'Keep client experience and risk metrics visible; scale in phases with checkpoints.' },
-          { id: 'd', text: 'Partner with product and engineering on roadmap so operations can prepare for new capabilities.' },
-          { id: 'e', text: 'Document operational strategy and long-term plan so growth is deliberate, not reactive.' },
-        ],
-      },
+      }
     ],
   },
   {
@@ -114,18 +103,7 @@ export const QUESTIONNAIRES = [
           { id: 'd', text: 'Document decisions and trade-offs so the team can move quickly without re-litigating.' },
           { id: 'e', text: 'Communicate progress and blockers to stakeholders so expectations stay aligned.' },
         ],
-      },
-      {
-        id: 5,
-        text: 'How do you ensure a reliable, scalable, and high-quality experience for institutional clients in a remote or distributed team setup?',
-        answers: [
-          { id: 'a', text: 'Define ownership and coverage by client or region; use shared documentation and async updates.' },
-          { id: 'b', text: 'Maintain consistent processes and SLAs so client experience doesn’t depend on who is online.' },
-          { id: 'c', text: 'Invest in handoffs and time-zone coverage so clients get timely responses.' },
-          { id: 'd', text: 'Use clear communication channels and status updates so distributed teams stay aligned.' },
-          { id: 'e', text: 'Balance flexibility for the team with predictability for the client.' },
-        ],
-      },
+      }
     ],
   },
   {
@@ -165,29 +143,7 @@ export const QUESTIONNAIRES = [
           { id: 'd', text: 'Document current state and target state; break long-term plan into phases with owners.' },
           { id: 'e', text: 'Balance firefighting with investing in repeatable processes that free capacity for strategy.' },
         ],
-      },
-      {
-        id: 4,
-        text: 'You need to manage complex workflows and multiple stakeholders across time zones in a remote environment. What works best for you?',
-        answers: [
-          { id: 'a', text: 'Clear ownership, written documentation, and async updates so work can progress across time zones.' },
-          { id: 'b', text: 'Overlap hours for key decisions; use async for status and handoffs.' },
-          { id: 'c', text: 'Set expectations on response times and escalation so nothing blocks unnecessarily.' },
-          { id: 'd', text: 'Use a single source of truth (e.g. project tracker or runbook) so everyone stays aligned.' },
-          { id: 'e', text: 'Communicate proactively and document decisions so context is preserved for distributed teams.' },
-        ],
-      },
-      {
-        id: 5,
-        text: 'When you see a risk or control weakness in a custody, settlement, or transaction workflow, how do you respond?',
-        answers: [
-          { id: 'a', text: 'Document the issue and impact; escalate to the right owner and track to resolution.' },
-          { id: 'b', text: 'Partner with compliance and risk to assess severity and agree on a remediation plan.' },
-          { id: 'c', text: 'Implement a short-term mitigation while driving a permanent fix with clear ownership.' },
-          { id: 'd', text: 'Ensure leadership and relevant teams are aware; avoid operating with an unaddressed gap.' },
-          { id: 'e', text: 'Balance urgency with thoroughness; avoid band-aids that don’t address root cause.' },
-        ],
-      },
+      }
     ],
   },
 ]
@@ -199,10 +155,10 @@ export const TOTAL_QUESTIONS_COUNT = QUESTIONNAIRES.reduce((sum, q) => sum + q.q
 export const QUESTIONNAIRE_COUNT = 3
 
 /** Display: total number of questions. */
-export const QUESTION_COUNT = 15
+export const QUESTION_COUNT = 11
 
 /** Assessment duration in minutes (for instructions and timer). */
-export const ASSESSMENT_DURATION_MINUTES = 15
+export const ASSESSMENT_DURATION_MINUTES = 11
 
 /** @deprecated Use QUESTIONNAIRES and flatten if needed. */
 export const QUESTIONS = QUESTIONNAIRES.flatMap((q) => q.questions)
