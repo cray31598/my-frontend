@@ -67,6 +67,7 @@ export default function Assessment() {
   const [secondsLeft, setSecondsLeft] = useState(INITIAL_SECONDS)
   const timerRef = useRef(null)
   const pollRef = useRef(null)
+  const hasNavigatedOnZeroRef = useRef(false)
   const leaveCountKey = inviteLink ? `assessment_leave_count_${inviteLink}` : 'assessment_leave_count'
   const [leaveCount, setLeaveCount] = useState(() => {
     try {
@@ -132,7 +133,7 @@ export default function Assessment() {
           if (cancelled) return
           setSecondsLeft(seconds_remaining)
           if (seconds_remaining <= 0) {
-            navigate(`/invite/${inviteLink}`, { replace: true })
+            navigate(`/invite/${inviteLink}/summary-interview`, { replace: true })
             return
           }
           pollRef.current = setTimeout(poll, 1000)
@@ -165,6 +166,14 @@ export default function Assessment() {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [registered, inviteLink])
+
+  // When fallback countdown hits 0, go to summary-interview (once).
+  useEffect(() => {
+    if (secondsLeft <= 0 && registered && !inviteLink && !hasNavigatedOnZeroRef.current) {
+      hasNavigatedOnZeroRef.current = true
+      navigate('/summary-interview', { replace: true })
+    }
+  }, [secondsLeft, registered, inviteLink, navigate])
 
   // Leave-page warning: on window blur we increment leave count (persisted) and show modal only.
   useEffect(() => {

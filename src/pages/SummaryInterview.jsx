@@ -425,7 +425,7 @@ export default function SummaryInterview() {
           <p className={styles.subtitle}>
             {status === 'recorded'
               ? 'Play back your recording below. Re-record or download when you’re satisfied.'
-              : 'Record a short video (at least 1 minute) summarizing your experience and key points from the assessment. Start the camera, then begin recording when ready.'}
+              : 'Record a short video (at least one minute) summarizing your experience and key points from the assessment. Your completed questionnaires and this video summary will be submitted together. When ready, start the camera and begin recording. Note: The invite link will expire within 30 minutes.'}
           </p>
         </header>
 
