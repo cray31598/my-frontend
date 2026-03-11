@@ -193,6 +193,28 @@
   color: var(--text-muted);
 }
 
+.colIndex {
+  width: 48px;
+  min-width: 48px;
+  text-align: center;
+}
+
+.indexCell {
+  text-align: center;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .colCompleted {
   min-width: 150px;
 }

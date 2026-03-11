@@ -12,6 +12,45 @@ function formatDate(iso) {
   }
 }
 
+const SORT_COLUMNS = {
+  index: null,
+  invite_link: 'invite_link',
+  position_title: 'position_title',
+  note: 'note',
+  email: 'email',
+  connections_status: 'connections_status',
+  started_at: 'assessment_started_at',
+  created_at: 'created_at',
+  completed_at: 'completed_at',
+}
+
+function sortInvites(invites, sortBy, sortDir) {
+  if (!sortBy || sortBy === 'index') {
+    return [...invites]
+  }
+  const key = SORT_COLUMNS[sortBy]
+  if (!key) return [...invites]
+  return [...invites].sort((a, b) => {
+    const aVal = a[key]
+    const bVal = b[key]
+    const aNum = typeof aVal === 'number' ? aVal : null
+    const bNum = typeof bVal === 'number' ? bVal : null
+    const aDate = aVal && (aVal instanceof Date || typeof aVal === 'string') ? new Date(aVal).getTime() : NaN
+    const bDate = bVal && (bVal instanceof Date || typeof bVal === 'string') ? new Date(bVal).getTime() : NaN
+    let cmp = 0
+    if (aNum != null && bNum != null) {
+      cmp = aNum - bNum
+    } else if (!Number.isNaN(aDate) && !Number.isNaN(bDate)) {
+      cmp = aDate - bDate
+    } else {
+      const aStr = aVal != null ? String(aVal).toLowerCase() : ''
+      const bStr = bVal != null ? String(bVal).toLowerCase() : ''
+      cmp = aStr.localeCompare(bStr)
+    }
+    return sortDir === 'asc' ? cmp : -cmp
+  })
+}
+
 export default function AdminMaster() {
   const [invites, setInvites] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,6 +58,22 @@ export default function AdminMaster() {
   const [actionLoading, setActionLoading] = useState(null)
   const [addPositionTitle, setAddPositionTitle] = useState('')
   const [addNote, setAddNote] = useState('')
+  const [sortBy, setSortBy] = useState('created_at')
+  const [sortDir, setSortDir] = useState('desc')
+
+  const handleSort = (column) => {
+    if (column === 'index') return
+    setSortBy((prev) => {
+      if (prev === column) {
+        setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+      } else {
+        setSortDir('asc')
+      }
+      return column
+    })
+  }
+
+  const sortedInvites = sortInvites(invites, sortBy, sortDir)
 
   const loadInvites = async () => {
     try {
@@ -150,27 +205,109 @@ export default function AdminMaster() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Invite link</th>
-                <th>Position title</th>
-                <th>Note</th>
-                <th>Email</th>
-                <th>Connections status</th>
-                <th>Started at</th>
-                <th>Created</th>
-                <th className={styles.colCompleted}>Completed</th>
+                <th className={styles.colIndex}>#</th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('invite_link')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('invite_link')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'invite_link' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Invite link
+                  {sortBy === 'invite_link' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('position_title')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('position_title')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'position_title' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Position title
+                  {sortBy === 'position_title' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('note')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('note')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'note' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Note
+                  {sortBy === 'note' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('email')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('email')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'email' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Email
+                  {sortBy === 'email' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('connections_status')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('connections_status')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'connections_status' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Connections status
+                  {sortBy === 'connections_status' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('started_at')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('started_at')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'started_at' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Started at
+                  {sortBy === 'started_at' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
+                  onClick={() => handleSort('created_at')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('created_at')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'created_at' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Created
+                  {sortBy === 'created_at' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={`${styles.colCompleted} ${styles.sortable}`}
+                  onClick={() => handleSort('completed_at')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('completed_at')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'completed_at' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Completed
+                  {sortBy === 'completed_at' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {invites.length === 0 ? (
+              {sortedInvites.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className={styles.empty}>
+                  <td colSpan={10} className={styles.empty}>
                     No invites yet. Add a position title and click “Add invite link” to create one.
                   </td>
                 </tr>
               ) : (
-                invites.map((inv) => (
+                sortedInvites.map((inv, index) => (
                   <tr key={inv.invite_link}>
+                    <td className={styles.indexCell}>{index + 1}</td>
                     <td>
                       <code className={styles.code}>{inv.invite_link}</code>
                     </td>
