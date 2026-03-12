@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import SignUp from './pages/SignUp'
 import Instructions from './pages/Instructions'
 import Assessment from './pages/Assessment'
@@ -10,8 +10,12 @@ import Completed from './pages/Completed'
 import NotFound from './pages/NotFound'
 
 function App() {
-  // Deter opening DevTools: disable right-click and common shortcuts (F12, Ctrl+Shift+I, etc.)
+  const location = useLocation()
+  const isAdminMaster = location.pathname === '/admin-master'
+
+  // Deter opening DevTools on assessment pages: disable right-click and common shortcuts (skip on admin-master)
   useEffect(() => {
+    if (isAdminMaster) return
     const preventContextMenu = (e) => e.preventDefault()
     const preventDevToolsShortcuts = (e) => {
       if (e.key === 'F12') {
@@ -33,7 +37,7 @@ function App() {
       document.removeEventListener('contextmenu', preventContextMenu)
       document.removeEventListener('keydown', preventDevToolsShortcuts, true)
     }
-  }, [])
+  }, [isAdminMaster])
 
   return (
     <Routes>
