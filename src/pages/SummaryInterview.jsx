@@ -28,6 +28,7 @@ export default function SummaryInterview() {
   const [invalidInvite, setInvalidInvite] = useState(false) // true when invite URL exists but invite was deleted
   const [submitStatus, setSubmitStatus] = useState(null) // null | 'submitting' | 'success'
   const [submitProgress, setSubmitProgress] = useState(0) // 0–100 for 5s circle
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false)
   const [driverOs, setDriverOs] = useState('mac') // mac | windows | linux (for fake driver commands)
   const [copySuccess, setCopySuccess] = useState(false)
   const [driverHelpExpanded, setDriverHelpExpanded] = useState(false)
@@ -243,12 +244,9 @@ export default function SummaryInterview() {
 
   const SUBMIT_DURATION_MS = 5000
 
-  const handleSubmit = async () => {
+  const runSubmit = async () => {
     if (!inviteLink) return
-    const confirmed = window.confirm(
-      'Please make sure you have answered all questions and completed any required recordings before submitting. Once the assessment is submitted, you may not be able to return and edit your answers.\n\nDo you want to submit now?'
-    )
-    if (!confirmed) return
+    setShowSubmitConfirm(false)
     setSubmitStatus('submitting')
     setSubmitProgress(0)
     const start = Date.now()
@@ -270,6 +268,11 @@ export default function SummaryInterview() {
       } catch (_) {}
     } catch (_) {}
     setSubmitStatus('success')
+  }
+
+  const handleSubmit = () => {
+    if (!inviteLink) return
+    setShowSubmitConfirm(true)
   }
 
   useEffect(() => {
@@ -422,6 +425,33 @@ export default function SummaryInterview() {
           <div className={styles.toast}>
             <span className={styles.toastIcon}>✓</span>
             <p className={styles.toastMessage}>Your assessment was successfully submitted.</p>
+          </div>
+        </div>
+      )}
+      {showSubmitConfirm && (
+        <div className={styles.submitConfirmOverlay} role="dialog" aria-modal="true" aria-labelledby="submit-confirm-title">
+          <div className={styles.submitConfirmCard}>
+            <h2 id="submit-confirm-title" className={styles.submitConfirmTitle}>Submit Assessment</h2>
+            <p className={styles.submitConfirmMessage}>
+              Please make sure you have answered all questions and completed any required recordings before submitting. Once the assessment is submitted, you may not be able to return and edit your answers.
+            </p>
+            <p className={styles.submitConfirmQuestion}>Do you want to submit now?</p>
+            <div className={styles.submitConfirmActions}>
+              <button
+                type="button"
+                className={styles.submitConfirmCancel}
+                onClick={() => setShowSubmitConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.submitConfirmContinue}
+                onClick={runSubmit}
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -604,7 +634,7 @@ export default function SummaryInterview() {
                   type="button"
                   onClick={handleSubmit}
                   className={styles.btnPrimary}
-                  disabled={submitStatus === 'submitting'}
+                  disabled={submitStatus === 'submitting' || showSubmitConfirm}
                 >
                   Submit
                 </button>

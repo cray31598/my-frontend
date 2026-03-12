@@ -31,14 +31,10 @@ export async function getInviteByLink(inviteLink) {
   return data.invite
 }
 
-/** Get real-time assessment timer from backend (seconds_remaining, seconds_elapsed, server_time). */
+/** Get real-time assessment timer from backend (seconds_remaining, server_time). */
 export async function getAssessmentTimer(inviteLink) {
   const data = await request(`/api/invites/${encodeURIComponent(inviteLink)}/timer`)
-  return {
-    seconds_remaining: data.seconds_remaining,
-    seconds_elapsed: data.seconds_elapsed ?? 0,
-    server_time: data.server_time,
-  }
+  return { seconds_remaining: data.seconds_remaining, server_time: data.server_time }
 }
 
 const INVITE_CODE_LENGTH = 22
