@@ -133,9 +133,6 @@ export default function Instructions() {
                 This assessment includes <strong>{QUESTIONNAIRE_COUNT} questionnaires</strong> with a total of <strong>{QUESTION_COUNT} questions</strong>.
               </li>
               <li>
-                We recommend allowing approximately <strong>{ASSESSMENT_DURATION_MINUTES} minutes</strong> to complete the assessment.
-              </li>
-              <li>
                 Please complete the assessment in <strong>one continuous browser session</strong>. Once started, it cannot be paused, restarted, or retaken.
               </li>
               <li>
