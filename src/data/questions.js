@@ -242,18 +242,7 @@ export const INVESTOR_QUESTIONNAIRES = [
           { id: 'd', text: 'Define clear handoffs and escalation paths so issues are resolved without blocking daily trading.' },
           { id: 'e', text: 'Balance BAU delivery with strategic improvements; avoid letting firefighting block longer-term work.' },
         ],
-      },
-      {
-        id: 4,
-        text: 'In a fast-moving market, you need to make a disciplined decision under time pressure. How do you proceed?',
-        answers: [
-          { id: 'a', text: 'Rely on predefined rules and limits; avoid ad hoc exceptions that increase risk.' },
-          { id: 'b', text: 'Gather the most critical data quickly; decide within the window that the opportunity allows.' },
-          { id: 'c', text: 'Communicate the situation and decision to the team so there is alignment and accountability.' },
-          { id: 'd', text: 'Document the rationale and outcome for post-trade review and process improvement.' },
-          { id: 'e', text: 'Balance speed with control: act when the edge is clear and within risk parameters.' },
-        ],
-      },
+      }
     ],
   },
   {
