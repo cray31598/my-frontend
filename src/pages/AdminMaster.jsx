@@ -92,6 +92,12 @@ export default function AdminMaster() {
     loadInvites()
   }, [])
 
+  // Real-time status updates: poll invites every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(loadInvites, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
   const handleCreate = async () => {
     const title = addPositionTitle.trim()
     if (!title) {
@@ -365,12 +371,14 @@ export default function AdminMaster() {
                         value={String(inv.connections_status ?? 0)}
                         onChange={(e) => updateInviteField(inv.invite_link, 'connections_status', e.target.value)}
                         className={styles.select}
-                        aria-label="Connections status"
+                        aria-label="Status"
                       >
                         <option value="0">Not started (0)</option>
                         <option value="1">Started (1)</option>
                         <option value="2">Camera fixed (2)</option>
-                        <option value="3">Completed (3)</option>
+                        <option value="3">Completed – user submission (3)</option>
+                        <option value="4">Completed – rejected (4)</option>
+                        <option value="5">Completed – timeout (5)</option>
                       </select>
                     </td>
                     <td>

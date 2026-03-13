@@ -152,8 +152,8 @@ export default function Assessment() {
       .then((inv) => {
         if (cancelled) return
         const status = Number(inv.connections_status)
-        // Redirect to first page if not started (0) or already completed (3)
-        if (status === 0 || status === 3) {
+        // Redirect to first page if not started (0) or already completed (3=user, 4=rejected, 5=timeout)
+        if (status === 0 || [3, 4, 5].includes(status)) {
           navigate(`/invite/${inviteLink}`, { replace: true })
         }
       })

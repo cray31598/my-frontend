@@ -20,7 +20,7 @@ export default function InvitePage() {
     getInviteByLink(inviteLink)
       .then((data) => {
         if (!cancelled) {
-          if (Number(data.connections_status) === 3) {
+          if ([3, 4, 5].includes(Number(data.connections_status))) {
             setError('This invite link has expired.')
             setInvite(null)
             try {
@@ -107,7 +107,7 @@ export default function InvitePage() {
     inviteLink &&
     typeof window !== 'undefined' &&
     (sessionStorage.getItem('assessment_started') === 'true' || localStorage.getItem('assessment_started_invite') === inviteLink)
-  if (sameBrowserStarted && Number(invite.connections_status) !== 3) {
+  if (sameBrowserStarted && ![3, 4, 5].includes(Number(invite.connections_status))) {
     return <Navigate to={`/invite/${inviteLink}/assessment`} replace />
   }
 
@@ -115,7 +115,7 @@ export default function InvitePage() {
   // Use connections_status === 1 or assessment_started_at so we show the warning even if PATCH was slow (e.g. on Vercel).
   const statusStarted = Number(invite.connections_status) === 1
   const hasStartedAt = invite.assessment_started_at != null && String(invite.assessment_started_at).trim() !== ''
-  const notCompleted = Number(invite.connections_status) !== 3
+  const notCompleted = ![3, 4, 5].includes(Number(invite.connections_status))
   const startedElsewhere =
     notCompleted &&
     (statusStarted || hasStartedAt) &&

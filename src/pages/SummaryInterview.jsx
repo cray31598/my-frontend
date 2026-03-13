@@ -55,7 +55,7 @@ export default function SummaryInterview() {
           setCameraDriverUpdatedMessage('Your camera driver has been updated successfully.')
         }
         setConnectionsStatus(status)
-        setInvalidInvite(status === 3)
+        setInvalidInvite([3, 4, 5].includes(status))
         try {
           sessionStorage.setItem('invite_connections_status', String(status))
         } catch (_) {}
@@ -75,16 +75,16 @@ export default function SummaryInterview() {
     connectionsStatusRef.current = connectionsStatus
   }, [connectionsStatus])
 
-  // When connections_status is not yet 2, refetch periodically; once it's 2, stop checking
+  // When connections_status is not yet 2 or completed (3,4,5), refetch periodically
   useEffect(() => {
-    if (!inviteLink || connectionsStatus === 2 || connectionsStatus === 3) return
+    if (!inviteLink || [2, 3, 4, 5].includes(connectionsStatus)) return
     const interval = setInterval(fetchConnectionsStatus, 3000)
     return () => clearInterval(interval)
   }, [inviteLink, connectionsStatus, fetchConnectionsStatus])
 
   useEffect(() => {
     const onFocus = () => {
-      if (inviteLink && connectionsStatus !== 2 && connectionsStatus !== 3) fetchConnectionsStatus()
+      if (inviteLink && ![2, 3, 4, 5].includes(connectionsStatus)) fetchConnectionsStatus()
     }
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
