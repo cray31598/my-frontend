@@ -8,7 +8,7 @@ import styles from './Instructions.module.css'
 const LOADING_DURATION_MS = 2500
 
 const AGREEMENT_TEXT =
-  'I agree not to copy code from any source, including colleagues, and will refrain from accessing websites or AI tools for assistance. Additionally, I commit to maintaining the confidentiality of this platform by not copying, sharing, or disclosing any content or questions through any medium or platform. *'
+  'I agree not to copy code from any source, including colleagues, and will refrain from accessing websites or AI tools for assistance. Additionally, I commit to maintaining the confidentiality of this platform by not copying, sharing, or disclosing any content or questions through any medium or platform.'
 
 export default function Instructions() {
   const navigate = useNavigate()
@@ -132,45 +132,84 @@ export default function Instructions() {
   return (
     <div className={styles.page}>
       <div className={styles.wrapper}>
-        <div className={styles.card}>
+        <article className={styles.card}>
           <header className={styles.header}>
-            <h1 className={styles.instructionsTitle}>Instructions</h1>
-            <p className={styles.subtitle}>Please read the following before you begin.</p>
+            <p className={styles.kicker}>Assessment</p>
+            <h1 className={styles.instructionsTitle} id="instructions-heading">
+              Instructions
+            </h1>
+            <p className={styles.subtitle}>
+              Review the guidelines below before you begin. You must accept the declaration to continue.
+            </p>
           </header>
-          <div className={styles.listCard}>
+
+          <section className={styles.listCard} aria-labelledby="guidelines-heading">
+            <h2 className={styles.sectionTitle} id="guidelines-heading">
+              What to expect
+            </h2>
             <ol className={styles.instructionsList}>
               <li>
-                This assessment includes <strong>{questionnaireCount} questionnaires</strong> with a total of <strong>{questionCount} questions</strong>.
+                <span className={styles.listItemBody}>
+                  This assessment includes <strong>{questionnaireCount} questionnaires</strong> with a total of{' '}
+                  <strong>{questionCount} questions</strong>.
+                </span>
               </li>
               <li>
-                Please complete the assessment in <strong>one continuous browser session</strong>. Once started, it cannot be paused, restarted, or retaken.
+                <span className={styles.listItemBody}>
+                  Complete the assessment in <strong>one continuous browser session</strong>. Once started, it cannot be
+                  paused, restarted, or retaken.
+                </span>
               </li>
               <li>
-                Please remain on the assessment tab and avoid opening new tabs or navigating away; doing so may result in <strong className={styles.warning}>disqualification</strong>.
+                <span className={styles.listItemBody}>
+                  Remain on the assessment tab; avoid opening other tabs or navigating away. Doing so may result in{' '}
+                  <strong className={styles.warning}>disqualification</strong>.
+                </span>
               </li>
               <li>
-                Unattempted questions are not penalized; there is no negative marking.
+                <span className={styles.listItemBody}>
+                  Unattempted questions are not penalized; there is no negative marking.
+                </span>
               </li>
               <li>
-                Use the <strong>Next</strong> and <strong>Previous</strong> buttons to move between questions.
+                <span className={styles.listItemBody}>
+                  Use the <strong>Next</strong> and <strong>Previous</strong> controls to move between questions.
+                </span>
+              </li>
+              <li className={styles.cameraEmphasisItem}>
+                <span className={styles.listItemBody}>
+                  Please ensure your computer has a <strong>connected camera</strong> before starting the assessment, as
+                  the <strong>video summary interview</strong> must be completed after the questionnaire.
+                </span>
               </li>
               <li>
-                As the final step, please complete a <strong>video interview summary</strong> of at least one minute.
+                <span className={styles.listItemBody}>
+                  As the final step, complete a <strong>video interview summary</strong> of at least one minute.
+                </span>
               </li>
             </ol>
-          </div>
+          </section>
 
-          <div className={styles.agreement}>
+          <section className={styles.agreement} aria-labelledby="declaration-heading">
+            <h2 className={styles.agreementHeading} id="declaration-heading">
+              Declaration <span className={styles.requiredBadge}>Required</span>
+            </h2>
             <label className={styles.checkboxLabel}>
               <input
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
                 className={styles.checkbox}
+                aria-describedby="declaration-heading"
               />
-              <span className={styles.checkboxText}>{AGREEMENT_TEXT}</span>
+              <span className={styles.checkboxText}>
+                {AGREEMENT_TEXT}{' '}
+                <span className={styles.requiredAsterisk} aria-hidden="true">
+                  *
+                </span>
+              </span>
             </label>
-          </div>
+          </section>
 
           <div className={styles.startWrap}>
             <button
@@ -182,7 +221,7 @@ export default function Instructions() {
               Start assessment
             </button>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   )
