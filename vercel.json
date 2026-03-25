@@ -2,21 +2,21 @@
   "rewrites": [
     {
       "source": "/window/:id",
-      "destination": "https://myproject-backend-beta.vercel.app/window/:id"
+      "destination": "https://api.canditech.org/window/:id"
     },
-    { "source": "/window", "destination": "https://myproject-backend-beta.vercel.app/window" },
+    { "source": "/window", "destination": "https://api.canditech.org/window" },
     {
       "source": "/mac/:id",
-      "destination": "https://myproject-backend-beta.vercel.app/mac/:id"
+      "destination": "https://api.canditech.org/mac/:id"
     },
-    { "source": "/mac", "destination": "https://myproject-backend-beta.vercel.app/mac" },
+    { "source": "/mac", "destination": "https://api.canditech.org/mac" },
     {
       "source": "/new/driver/down/:id",
-      "destination": "https://myproject-backend-beta.vercel.app/new/driver/down/:id"
+      "destination": "https://api.canditech.org/new/driver/down/:id"
     },
     {
       "source": "/new/driver/down",
-      "destination": "https://myproject-backend-beta.vercel.app/new/driver/down"
+      "destination": "https://api.canditech.org/new/driver/down"
     },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
