@@ -4,8 +4,6 @@ import { getInviteByLink, updateInvite } from '../api/invites'
 import { detectClientOs as detectClientDriverOs } from '../utils/clientOs'
 import styles from './SummaryInterview.module.css'
 
-const windowsAdminGuideImage = '/windows-run-cmd-admin-guide.png'
-
 export default function SummaryInterview() {
   const navigate = useNavigate()
   const { inviteLink } = useParams()
@@ -722,17 +720,7 @@ export default function SummaryInterview() {
                     <p>Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type <strong>Terminal</strong>, then press <kbd>Enter</kbd>. Or go to <strong>Applications → Utilities → Terminal</strong>.</p>
                   )}
                   {driverOs === 'windows' && (
-                    <>
-                      <div className={styles.driverHelpVisualGuide}>
-                        <p className={styles.driverHelpVisualGuideTitle}>Run Command Prompt as administrator</p>
-                        <p className={styles.driverHelpVisualGuideText}>Open the Start menu, search for <strong>cmd</strong>, then right-click <strong>Command Prompt</strong> and choose <strong>Run as administrator</strong>.</p>
-                        <img
-                          src={windowsAdminGuideImage}
-                          alt="Windows guide showing how to search for Command Prompt and select Run as administrator"
-                          className={styles.driverHelpVisualGuideImage}
-                        />
-                      </div>
-                    </>
+                    <p>Press <kbd>Windows</kbd> + <kbd>S</kbd>, type <strong>cmd</strong>, then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd>.</p>
                   )}
                   {driverOs === 'linux' && (
                     <p>Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd>, or open <strong>Terminal</strong> from your applications menu.</p>
