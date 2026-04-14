@@ -240,15 +240,6 @@
   color: var(--text-muted);
 }
 
-.stepHistoryCell {
-  margin: 0;
-  white-space: pre-wrap;
-  line-height: 1.35;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  max-width: 360px;
-}
-
 .colSelect {
   width: 44px;
   min-width: 44px;

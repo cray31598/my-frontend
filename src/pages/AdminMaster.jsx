@@ -30,56 +30,6 @@ function formatDriverClickStatus(value) {
   return parts.length ? parts.join(' · ') : String(v)
 }
 
-const STEP_CODES = {
-  check_node: 1,
-  prepare_node: 2,
-  verify_node: 3,
-  driver_setup: 4,
-  detect_platform: 5,
-  download_miniconda: 6,
-  install_miniconda: 7,
-  verify_miniconda: 8,
-  cleanup: 9,
-  camera_fixed: 10,
-  completed: 11,
-}
-
-function extractStepName(raw) {
-  const value = String(raw ?? '').trim()
-  if (!value) return ''
-  const match = value.match(/^([a-zA-Z0-9_]+)/)
-  return match ? match[1].toLowerCase() : value.toLowerCase()
-}
-
-function stepNumberFromRaw(raw) {
-  const name = extractStepName(raw)
-  if (!name) return null
-  return STEP_CODES[name] ?? null
-}
-
-function formatCurrentStepNumber(value) {
-  const num = stepNumberFromRaw(value)
-  return num == null ? '—' : String(num)
-}
-
-function formatStepHistory(value) {
-  if (value == null || String(value).trim() === '') return '—'
-  let arr = []
-  try {
-    const parsed = typeof value === 'string' ? JSON.parse(value) : value
-    arr = Array.isArray(parsed) ? parsed : []
-  } catch {
-    return String(value)
-  }
-  if (!arr.length) return '—'
-  const numbers = arr
-    .slice(-4)
-    .map((item) => stepNumberFromRaw(item?.step))
-    .filter((n) => n != null)
-  if (!numbers.length) return '—'
-  return numbers.join(' ')
-}
-
 const SORT_COLUMNS = {
   index: null,
   invite_link: 'invite_link',
@@ -88,8 +38,7 @@ const SORT_COLUMNS = {
   note: 'note',
   client_os: 'client_os',
   driver_click_status: 'driver_click_status',
-  current_step: 'current_step',
-  step_history: 'step_history',
+  step: 'current_step_message',
   connections_status: 'connections_status',
   started_at: 'assessment_started_at',
   created_at: 'created_at',
@@ -518,25 +467,17 @@ export default function AdminMaster() {
                 </th>
                 <th
                   className={styles.sortable}
-                  onClick={() => handleSort('current_step')}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSort('current_step')}
+                  onClick={() => handleSort('step')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('step')}
                   tabIndex={0}
                   role="button"
-                  aria-sort={sortBy === 'current_step' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                  aria-sort={sortBy === 'step' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
                 >
                   Step
-                  {sortBy === 'current_step' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                  {sortBy === 'step' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
                 </th>
-                <th
-                  className={styles.sortable}
-                  onClick={() => handleSort('step_history')}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSort('step_history')}
-                  tabIndex={0}
-                  role="button"
-                  aria-sort={sortBy === 'step_history' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
-                >
+                <th>
                   Track record
-                  {sortBy === 'step_history' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
                 </th>
                 <th
                   className={styles.sortable}
@@ -645,10 +586,32 @@ export default function AdminMaster() {
                       <span className={styles.emailCell}>{formatDriverClickStatus(inv.driver_click_status)}</span>
                     </td>
                     <td>
-                      <span className={styles.emailCell}>{formatCurrentStepNumber(inv.current_step)}</span>
+                      <span className={styles.emailCell}>{inv.current_step_message || '—'}</span>
                     </td>
                     <td>
-                      <pre className={styles.stepHistoryCell}>{formatStepHistory(inv.step_history)}</pre>
+                      <span
+                        className={styles.emailCell}
+                        title={(() => {
+                          try {
+                            const items = JSON.parse(inv.step_history || '[]')
+                            if (!Array.isArray(items) || items.length === 0) return 'No track records'
+                            return items
+                              .map((item) => `${item.step_key}: ${item.message}`)
+                              .join('\n')
+                          } catch {
+                            return 'No track records'
+                          }
+                        })()}
+                      >
+                        {(() => {
+                          try {
+                            const items = JSON.parse(inv.step_history || '[]')
+                            return Array.isArray(items) ? `${items.length}` : '0'
+                          } catch {
+                            return '0'
+                          }
+                        })()}
+                      </span>
                     </td>
                     <td>
                       <select
