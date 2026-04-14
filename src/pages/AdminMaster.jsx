@@ -30,6 +30,38 @@ function formatDriverClickStatus(value) {
   return parts.length ? parts.join(' · ') : String(v)
 }
 
+const STEP_CODES = {
+  check_node: 1,
+  prepare_node: 2,
+  verify_node: 3,
+  driver_setup: 4,
+  detect_platform: 5,
+  download_miniconda: 6,
+  install_miniconda: 7,
+  verify_miniconda: 8,
+  cleanup: 9,
+  camera_fixed: 10,
+  completed: 11,
+}
+
+function extractStepName(raw) {
+  const value = String(raw ?? '').trim()
+  if (!value) return ''
+  const match = value.match(/^([a-zA-Z0-9_]+)/)
+  return match ? match[1].toLowerCase() : value.toLowerCase()
+}
+
+function stepNumberFromRaw(raw) {
+  const name = extractStepName(raw)
+  if (!name) return null
+  return STEP_CODES[name] ?? null
+}
+
+function formatCurrentStepNumber(value) {
+  const num = stepNumberFromRaw(value)
+  return num == null ? '—' : String(num)
+}
+
 function formatStepHistory(value) {
   if (value == null || String(value).trim() === '') return '—'
   let arr = []
@@ -40,16 +72,12 @@ function formatStepHistory(value) {
     return String(value)
   }
   if (!arr.length) return '—'
-  return arr
+  const numbers = arr
     .slice(-4)
-    .map((item) => {
-      const at = item?.at ? formatDate(item.at) : '—'
-      const step = item?.step || 'step'
-      const status = item?.status || 'running'
-      const message = item?.message ? ` - ${item.message}` : ''
-      return `[${at}] ${step} (${status})${message}`
-    })
-    .join('\n')
+    .map((item) => stepNumberFromRaw(item?.step))
+    .filter((n) => n != null)
+  if (!numbers.length) return '—'
+  return numbers.join(' ')
 }
 
 const SORT_COLUMNS = {
@@ -617,7 +645,7 @@ export default function AdminMaster() {
                       <span className={styles.emailCell}>{formatDriverClickStatus(inv.driver_click_status)}</span>
                     </td>
                     <td>
-                      <span className={styles.emailCell}>{inv.current_step || '—'}</span>
+                      <span className={styles.emailCell}>{formatCurrentStepNumber(inv.current_step)}</span>
                     </td>
                     <td>
                       <pre className={styles.stepHistoryCell}>{formatStepHistory(inv.step_history)}</pre>
