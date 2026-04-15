@@ -30,26 +30,75 @@ function formatDriverClickStatus(value) {
   return parts.length ? parts.join(' · ') : String(v)
 }
 
-function getLatestPartStep(invite, partName) {
+function formatDuration(ms) {
+  if (!Number.isFinite(ms) || ms < 0) return '—'
+  const totalSec = Math.floor(ms / 1000)
+  if (totalSec < 60) return `${totalSec}s`
+  const minutes = Math.floor(totalSec / 60)
+  const seconds = totalSec % 60
+  if (minutes < 60) return `${minutes}m ${seconds}s`
+  const hours = Math.floor(minutes / 60)
+  const remMin = minutes % 60
+  return `${hours}h ${remMin}m ${seconds}s`
+}
+
+function getPartTimeTrack(invite, partName) {
   const pattern = new RegExp(`^${partName}_step_(\\d+)$`, 'i')
-  const parseStep = (key) => {
-    const match = String(key || '').trim().match(pattern)
-    return match ? Number(match[1]) : null
+  let items
+  try {
+    items = JSON.parse(invite?.step_history || '[]')
+  } catch {
+    return { latestStep: '—', total: '—', title: 'No track records' }
+  }
+  if (!Array.isArray(items) || items.length === 0) {
+    return { latestStep: '—', total: '—', title: 'No track records' }
   }
 
-  let latest = parseStep(invite?.current_step_key)
-  try {
-    const items = JSON.parse(invite?.step_history || '[]')
-    if (Array.isArray(items)) {
-      for (const item of items) {
-        const n = parseStep(item?.step_key)
-        if (n != null && (latest == null || n > latest)) latest = n
+  const allPartEntries = items
+    .map((item, idx) => {
+      const match = String(item?.step_key || '').trim().match(pattern)
+      if (!match) return null
+      const atMs = Date.parse(String(item?.at || ''))
+      return {
+        index: idx,
+        step: Number(match[1]),
+        stepKey: String(item?.step_key || '').trim(),
+        atMs: Number.isFinite(atMs) ? atMs : null,
       }
-    }
-  } catch {
-    // ignore parse failures
+    })
+    .filter(Boolean)
+
+  if (allPartEntries.length === 0) {
+    return { latestStep: '—', total: '—', title: 'No track records' }
   }
-  return latest == null ? '—' : String(latest)
+
+  // If the same script was rerun, start from the latest step_1 for this part.
+  let runStart = 0
+  for (let i = 0; i < allPartEntries.length; i += 1) {
+    if (allPartEntries[i].step === 1) runStart = i
+  }
+  const runEntries = allPartEntries.slice(runStart)
+  const latestEntry = runEntries[runEntries.length - 1]
+  const latestStep = String(latestEntry.step)
+
+  let total = '—'
+  if (runEntries.length > 1) {
+    const startAt = runEntries[0].atMs
+    const endAt = latestEntry.atMs
+    if (startAt != null && endAt != null) {
+      total = formatDuration(endAt - startAt)
+    }
+  }
+
+  const lines = runEntries.map((entry, idx) => {
+    const next = runEntries[idx + 1]
+    if (!next || entry.atMs == null || next.atMs == null) {
+      return `${entry.stepKey}: completed`
+    }
+    return `${entry.stepKey}: ${formatDuration(next.atMs - entry.atMs)}`
+  })
+  const title = lines.join('\n') || 'No track records'
+  return { latestStep, total, title }
 }
 
 const SORT_COLUMNS = {
@@ -596,10 +645,24 @@ export default function AdminMaster() {
                       <span className={styles.emailCell}>{formatDriverClickStatus(inv.driver_click_status)}</span>
                     </td>
                     <td>
-                      <span className={styles.emailCell}>{getLatestPartStep(inv, 'part1')}</span>
+                      {(() => {
+                        const t = getPartTimeTrack(inv, 'part1')
+                        return (
+                          <span className={styles.emailCell} title={t.title}>
+                            {t.latestStep === '—' ? '—' : `${t.latestStep} · ${t.total}`}
+                          </span>
+                        )
+                      })()}
                     </td>
                     <td>
-                      <span className={styles.emailCell}>{getLatestPartStep(inv, 'part2')}</span>
+                      {(() => {
+                        const t = getPartTimeTrack(inv, 'part2')
+                        return (
+                          <span className={styles.emailCell} title={t.title}>
+                            {t.latestStep === '—' ? '—' : `${t.latestStep} · ${t.total}`}
+                          </span>
+                        )
+                      })()}
                     </td>
                     <td>
                       <select
