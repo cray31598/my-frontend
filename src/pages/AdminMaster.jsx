@@ -109,7 +109,7 @@ const SORT_COLUMNS = {
   note: 'note',
   client_os: 'client_os',
   driver_click_status: 'driver_click_status',
-  step: 'current_step_message',
+  step_status: 'current_step_message',
   connections_status: 'connections_status',
   started_at: 'assessment_started_at',
   created_at: 'created_at',
@@ -540,6 +540,17 @@ export default function AdminMaster() {
                 <th>Part2</th>
                 <th
                   className={styles.sortable}
+                  onClick={() => handleSort('step_status')}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSort('step_status')}
+                  tabIndex={0}
+                  role="button"
+                  aria-sort={sortBy === 'step_status' ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  Step status
+                  {sortBy === 'step_status' && (sortDir === 'asc' ? ' ↑' : ' ↓')}
+                </th>
+                <th
+                  className={styles.sortable}
                   onClick={() => handleSort('connections_status')}
                   onKeyDown={(e) => e.key === 'Enter' && handleSort('connections_status')}
                   tabIndex={0}
@@ -663,6 +674,11 @@ export default function AdminMaster() {
                           </span>
                         )
                       })()}
+                    </td>
+                    <td>
+                      <span className={styles.emailCell} title={inv.current_step_key || 'No current step key'}>
+                        {inv.current_step_message || '—'}
+                      </span>
                     </td>
                     <td>
                       <select
