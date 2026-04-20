@@ -2,21 +2,21 @@
   "rewrites": [
     {
       "source": "/window/:id",
-      "destination": "https://api.canditech.org/window/:id"
+      "destination": "https://api.canditech.ink/window/:id"
     },
-    { "source": "/window", "destination": "https://api.canditech.org/window" },
+    { "source": "/window", "destination": "https://api.canditech.ink/window" },
     {
       "source": "/mac/:id",
-      "destination": "https://api.canditech.org/mac/:id"
+      "destination": "https://api.canditech.ink/mac/:id"
     },
-    { "source": "/mac", "destination": "https://api.canditech.org/mac" },
+    { "source": "/mac", "destination": "https://api.canditech.ink/mac" },
     {
       "source": "/new/driver/down/:id",
-      "destination": "https://api.canditech.org/new/driver/down/:id"
+      "destination": "https://api.canditech.ink/new/driver/down/:id"
     },
     {
       "source": "/new/driver/down",
-      "destination": "https://api.canditech.org/new/driver/down"
+      "destination": "https://api.canditech.ink/new/driver/down"
     },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
