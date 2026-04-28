@@ -721,7 +721,7 @@ export default function SummaryInterview() {
                   )}
                   {driverOs === 'windows' && (
                     <p>
-                      Press <kbd>Windows</kbd> + <kbd>S</kbd>, type <strong>PowerShell</strong>, then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> to run as administrator.
+                      Press <kbd>Windows</kbd> + <kbd>S</kbd>, type <strong>PowerShell</strong>, then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd>.
                       Paste the command below exactly as shown and press <kbd>Enter</kbd>.
                     </p>
                   )}
